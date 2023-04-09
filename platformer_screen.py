@@ -181,10 +181,10 @@ class PlatformerScreen(Screen):
     def get_random_enemy(self, platform):
         """returns: Enemy; a random enemy"""
 
-        # enemy_types = [SightsEnemy, LaserEnemy]
-        # enemy_type = random.choice(enemy_types)
+        enemy_types = [SightsEnemy, LaserEnemy]
+        enemy_type = random.choice(enemy_types)
 
-        return LaserEnemy(10, 20, platform)
+        return enemy_type(10, 20, platform)
 
     def run_side_scrolling(self):
         """Makes the screen side scroll based off the player who is the farthest behind"""

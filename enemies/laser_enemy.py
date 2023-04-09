@@ -36,9 +36,9 @@ class LaserEnemy(SightsEnemy):
         super().do_action_at_end_of_path()
         laser_length = self.platform.length - self.length
         laser_left_edge = self.right_edge if self.is_facing_right else self.left_edge - laser_length
-        laser_top_edge = self.vertical_midpoint
-        self.laser.number_set_dimensions(laser_left_edge, laser_top_edge, laser_length, self.bottom_edge - laser_top_edge)
-    
+
+        self.laser.shoot(laser_left_edge, self.vertical_midpoint, laser_length, self.bottom_edge - self.vertical_midpoint)
+
     def render(self):
         """Renders the object onto the screen"""
 
@@ -51,11 +51,6 @@ class LaserEnemy(SightsEnemy):
 
         self.laser.left_edge -= amount
         super().update_for_side_scrolling(amount)
-
-    def run_action_at_start_of_path(self):
-        """Runs the action at the start of the path"""
-
-        self.laser.length = 0
 
     def get_collidable_components(self):
         """:returns: Component[]; all the components that the player can collide into"""
@@ -72,5 +67,8 @@ class LaserEnemy(SightsEnemy):
 
         self.update_top_collision_data(inanimate_object)
 
+    def run(self):
+        super().run()
+        self.laser.run()
         
         
