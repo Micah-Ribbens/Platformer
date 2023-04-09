@@ -20,6 +20,7 @@ class BouncyProjectile(StraightProjectile):
         self.projectile_path = PhysicsPath(game_object=self, attribute_modifying="top_edge", height_of_path=-projectile_height, initial_distance=top_edge - self.height, time=time_to_vertex)
         self.projectile_path.set_initial_distance(top_edge - self.height)
         self.projectile_path.current_time = time_to_vertex
+        self.velocity = user_velocity + VelocityCalculator.get_velocity(SCREEN_LENGTH, 300)
 
     def run(self):
         """Runs all the code necessary in order for this object to work properly"""

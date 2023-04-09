@@ -20,7 +20,7 @@ PLAYER_MAX_HORIZONTAL_VELOCITY = VelocityCalculator.get_velocity(SCREEN_LENGTH, 
 
 ### Other
 PLAYER_OBJECT_TYPE = "Player"
-PLAYER_TOTAL_HIT_POINTS = 50
+PLAYER_TOTAL_HIT_POINTS = 20
 PLAYER_BASE_LEFT_EDGE = VelocityCalculator.get_dimension(SCREEN_LENGTH, 15)
 PLAYER_BASE_TOP_EDGE = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 60)
 
@@ -61,8 +61,8 @@ BOUNCY_THROWER_HIT_POINTS = 10
 BOUNCY_THROWER_COOL_DOWN_TIME = .15
 
 ### Straight Thrower
-STRAIGHT_PROJECTILE_LENGTH = VelocityCalculator.get_dimension(SCREEN_LENGTH, 3)
-STRAIGHT_PROJECTILE_HEIGHT = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 4)
+STRAIGHT_PROJECTILE_LENGTH = VelocityCalculator.get_dimension(SCREEN_LENGTH, 5)
+STRAIGHT_PROJECTILE_HEIGHT = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 5)
 STRAIGHT_THROWER_WEAPON_NAME = "straight thrower"
 STRAIGHT_THROWER_WEAPON_DAMAGE = 10
 STRAIGHT_THROWER_WEAPON_HIT_POINTS = 10
@@ -113,8 +113,11 @@ CHARGING_BULL_DISTANCE_NEEDED_TO_CHARGE = VelocityCalculator.get_dimension(SCREE
 ### Straight Enemy
 STRAIGHT_ENEMY_ACTION_PATH_WAIT_TIME = 1
 STRAIGHT_ENEMY_HORIZONTAL_VELOCITY = VelocityCalculator.get_velocity(SCREEN_LENGTH, 300)
-STRAIGHT_ENEMY_LENGTH = VelocityCalculator.get_dimension(SCREEN_LENGTH, 5)
+STRAIGHT_ENEMY_LENGTH = VelocityCalculator.get_dimension(SCREEN_LENGTH, 10)
 STRAIGHT_ENEMY_HEIGHT = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 10)
+
+LASER_ENEMY_LENGTH = VelocityCalculator.get_dimension(SCREEN_LENGTH, 5)
+LASER_ENEMY_HEIGHT = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 10)
 
 ## TODO Platform Start Coordinates
 START_PLATFORM_LEFT_EDGE = 0

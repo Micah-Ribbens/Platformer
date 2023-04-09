@@ -15,8 +15,8 @@ from base.gravity_engine import GravityEngine
 from inanimate_objects.platform import Platform
 from inanimate_objects.wall_of_death import WallOfDeath
 from players.player import Player
-from enemies.sights_enemy import StraightEnemy
-from enemies.laser_enemy import BouncyEnemy
+from enemies.sights_enemy import SightsEnemy
+from enemies.laser_enemy import LaserEnemy
 from game_qu.gui_components.grid import Grid
 from base.health_bar import HealthBar
 from game_qu.gui_components.hud import HUD
@@ -140,10 +140,9 @@ class PlatformerScreen(Screen):
             if player.platform_is_on is not None and not CollisionsEngine.is_collision(player, player.platform_is_on):
                 player.set_is_on_platform(False, None)
 
-            if player.hit_points_left <= 0 or not is_within_screen(player):
-                self.run_player_respawn()
+            if (CollisionsEngine.is_collision(player, self.wall_of_death) or
+                    player.hit_points_left <= 0 or not is_within_screen(player)):
 
-            if CollisionsEngine.is_collision(player, self.wall_of_death):
                 self.reset_game()
 
             # So the player is moves before side scrolling happens
@@ -182,10 +181,10 @@ class PlatformerScreen(Screen):
     def get_random_enemy(self, platform):
         """returns: Enemy; a random enemy"""
 
-        enemy_types = [StraightEnemy, BouncyEnemy]
-        enemy_type = random.choice(enemy_types)
+        # enemy_types = [SightsEnemy, LaserEnemy]
+        # enemy_type = random.choice(enemy_types)
 
-        return enemy_type(10, 20, platform)
+        return LaserEnemy(10, 20, platform)
 
     def run_side_scrolling(self):
         """Makes the screen side scroll based off the player who is the farthest behind"""
@@ -411,7 +410,8 @@ class PlatformerScreen(Screen):
         for game_object in self.players + self.enemies:
             game_components += game_object.get_components()
 
-        game_components += self.player_health_bars + self.platforms + [self.hud, self.wall_of_death]
+        # game_components += self.player_health_bars + self.platforms + [self.hud, self.wall_of_death]
+        game_components += self.player_health_bars + self.platforms + [self.hud]
         return game_components if self.intermediate_screen.has_finished() else self.intermediate_screen.get_components()
 
     # HELPER METHODS FOR COLLISIONS; Since they all have a unique length I can just use the lengths here

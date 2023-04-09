@@ -62,6 +62,7 @@ class Player(WeaponUser):
         """Initializes the object"""
 
         super().__init__("images/player")
+        load_and_transform_image("images/player_invincible")
 
         self.left_key, self.right_key, self.jump_key = left_key, right_key, jump_key
         self.down_key, self.attack_key = down_key, attack_key
@@ -77,7 +78,7 @@ class Player(WeaponUser):
         weapon_data = [lambda: game_button_is_pressed(self.attack_key), self, PLAYER_MAX_HORIZONTAL_VELOCITY]
         self.weapon_class_to_weapon = {StraightProjectileThrower.weapon_name: StraightProjectileThrower(*weapon_data),
                                        BouncyProjectileThrower.weapon_name: BouncyProjectileThrower(*weapon_data)}
-        self.weapon = self.weapon_class_to_weapon[BouncyProjectileThrower.weapon_name]
+        self.weapon = self.weapon_class_to_weapon[StraightProjectileThrower.weapon_name]
 
     def create_paths(self):
         """Creates all the paths for the player: jumping_path, decelerating_path, etc."""
@@ -278,6 +279,7 @@ class Player(WeaponUser):
 
         if index_of_sub_component != self.index_of_user:
             self.weapon.run_inanimate_object_collision(inanimate_object, index_of_sub_component - self.weapon_index_offset)
+            self.run_platform_teleportation(inanimate_object)
 
     def run_collisions(self):
         """Runs what should happen based on what got stored in the collision data"""
@@ -304,8 +306,8 @@ class Player(WeaponUser):
         is_decelerating_leftwards = not self.deceleration_path.has_finished() and not self.get_deceleration_is_rightwards()
 
         # Possible relating to everything but the deceleration
-        leftwards_movement_is_possible = not self.right_collision_data[0] and not player_is_beyond_screen_left
-        rightwards_movement_is_possible = not self.left_collision_data[0] and not player_is_beyond_screen_right
+        leftwards_movement_is_possible = not player_is_beyond_screen_left
+        rightwards_movement_is_possible = not player_is_beyond_screen_right
 
         self.can_move_left = leftwards_movement_is_possible and not is_decelerating_rightwards
         self.can_move_right = rightwards_movement_is_possible and not is_decelerating_leftwards
@@ -317,12 +319,6 @@ class Player(WeaponUser):
         self.change_attribute_if(player_is_beyond_screen_left, self.set_left_edge, 0)
         self.change_attribute_if(player_is_beyond_screen_right, self.set_left_edge, SCREEN_LENGTH - self.length)
 
-        if self.right_collision_data[0]:
-            self.set_left_edge(self.right_collision_data[1].right_edge)
-
-        if self.left_collision_data[0]:
-            self.set_left_edge(self.left_collision_data[1].left_edge - self.length)
-
     def get_deceleration_is_rightwards(self):
         """returns: boolean; if the deceleration direction is rightwards"""
 
@@ -332,17 +328,32 @@ class Player(WeaponUser):
     def alter_player_vertical_movement(self):
         """Alters the player's vertical movement so it can't go through platforms"""
 
-        player_is_on_platform = self.top_collision_data[0]
+        player_has_hit_platform = (self.top_collision_data[0] or self.bottom_collision_data[0] or
+                                   self.left_collision_data[0] or self.right_collision_data[0])
 
-        if player_is_on_platform:
-            self.set_top_edge(self.top_collision_data[1].top_edge - self.height)
-            self.gravity_engine.game_object_to_physics_path[self].reset()
+        platform_collision_list = list(filter(lambda item: item is not None,
+                                   [self.top_collision_data[1], self.bottom_collision_data[1],
+                                    self.left_collision_data[1], self.right_collision_data[1]]))
 
-        self.set_is_on_platform(player_is_on_platform, self.top_collision_data[1])
+        new_platform = None
+        if len(platform_collision_list) != 0:
+            new_platform = platform_collision_list[0]
 
-        if self.bottom_collision_data[0]:
-            self.gravity_engine.game_object_to_physics_path[self].reset()
-            self.run_bottom_edge_collision(self.bottom_collision_data[1].bottom_edge)
+        if player_has_hit_platform and self.platform_is_on is None:
+            self.run_platform_teleportation(new_platform)
+
+
+        self.set_is_on_platform(new_platform is not None, new_platform)
+
+    def run_platform_teleportation(self, new_platform):
+        """Makes the player teleport to the platform 'platform'"""
+
+        self.set_top_edge(new_platform.top_edge - self.height)
+        self.set_left_edge(new_platform.horizontal_midpoint - self.length / 2)
+        self.gravity_engine.game_object_to_physics_path[self].reset()
+
+        self.jumping_path.reset()
+
 
     def set_left_edge(self, left_edge):
         """Sets the left edge of the player equal to the value provided"""
@@ -465,3 +476,11 @@ class Player(WeaponUser):
         """returns: int; the amount of ammo the player has left"""
 
         return self.ammo_left
+
+    def render(self):
+        """Renders the player onto the screen"""
+
+        self.base_path_to_image = ("images/player" if self.invincibility_event.has_finished()
+                                   else "images/player_invincible")
+        super().render()
+

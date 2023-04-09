@@ -35,7 +35,7 @@ class StraightProjectile(Component):
 
         self.total_hit_points, self.hit_points_left = total_hit_points, total_hit_points
         self.is_moving_right = is_moving_right
-        self.velocity = user_max_velocity + VelocityCalculator.get_dimension(SCREEN_HEIGHT, 50)
+        self.velocity = user_max_velocity + VelocityCalculator.get_dimension(SCREEN_HEIGHT, 200)
         self.object_type, self.user = object_type, user
 
     def run(self):

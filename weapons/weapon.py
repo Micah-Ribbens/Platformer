@@ -69,22 +69,22 @@ class Weapon(abc.ABC):
     def update_for_side_scrolling(self, amount):
         pass
 
-    @abc.abstractmethod
+    # @abc.abstractmethod
     def run_enemy_collision(self, enemy, index_of_sub_component):
         """Runs what should happen when an enemy and the weapon collide"""
         pass
 
-    @abc.abstractmethod
+    # @abc.abstractmethod
     def run_inanimate_object_collision(self, inanimate_object, index_of_sub_component):
         """Runs what should happen when the weapon and an inanimate object collide"""
         pass
 
-    @abc.abstractmethod
+    # @abc.abstractmethod
     def run_upon_activation(self):
         """Runs what should happen when the person who plays the game tries to use the weapon"""
         pass
 
-    @abc.abstractmethod
+    # @abc.abstractmethod
     def reset(self):
         """Resets everything back to the start of the game"""
         pass

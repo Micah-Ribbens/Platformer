@@ -4,7 +4,7 @@ from enemies.enemy import Enemy
 from weapons.straight_projectile_thrower import StraightProjectileThrower
 
 
-class StraightEnemy(Enemy):
+class SightsEnemy(Enemy):
     action_path = None
     length = STRAIGHT_ENEMY_LENGTH
     height = STRAIGHT_ENEMY_HEIGHT
@@ -24,9 +24,9 @@ class StraightEnemy(Enemy):
         top_edge = platform.top_edge - self.height
         # Creating the action_path for the ninja
         self.action_path = ActionPath(Point(platform.right_edge - self.length, top_edge), self, velocity)
-        self.action_path.add_point(Point(platform.left_edge, top_edge), lambda: [], 0)
+        self.action_path.add_point(Point(platform.left_edge, top_edge), self.run_action_at_start_of_path)
         self.action_path.add_point(Point(platform.left_edge, top_edge), self.do_action_at_end_of_path, wait_time)
-        self.action_path.add_point(Point(platform.right_edge - self.length, top_edge), lambda: [], 0)
+        self.action_path.add_point(Point(platform.right_edge - self.length, top_edge), self.run_action_at_start_of_path)
         self.action_path.add_point(Point(platform.right_edge - self.length, top_edge), self.do_action_at_end_of_path, wait_time)
 
         self.action_path.is_unending = True
@@ -59,7 +59,10 @@ class StraightEnemy(Enemy):
     def do_action_at_end_of_path(self):
         """Does the action that is at the end of the path"""
 
+        self.is_facing_right = not self.is_facing_right
+
+    def run_action_at_start_of_path(self):
+        """Runs the action at the start of the path"""
+
         pass
-
-
 
