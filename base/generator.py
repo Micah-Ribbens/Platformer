@@ -46,9 +46,9 @@ class Generator:
         # Have to add that because side scrolling will increase how much of the platform is visible
         next_platform_length_visible += last_platform_length_left
 
-        if next_platform_length_visible < MINIMUM_PLATFORM_LENGTH_VISIBLE:
-            difference = MINIMUM_PLATFORM_LENGTH_VISIBLE - next_platform_length_visible
-            next_platform.left_edge -= difference
+        # if next_platform_length_visible < MINIMUM_PLATFORM_LENGTH_VISIBLE:
+        difference = MINIMUM_PLATFORM_LENGTH_VISIBLE - next_platform_length_visible
+        next_platform.left_edge -= difference
 
         return next_platform
 
@@ -60,6 +60,10 @@ class Generator:
 
         topmost_top_edge = self.player.get_topmost_top_edge(last_platform, accuracy, self._get_accuracy(1))
         bottommost_top_edge = self._get_bottommost_top_edge(last_platform, new_platform_height)
+
+        if topmost_top_edge >= bottommost_top_edge:
+            topmost_top_edge = bottommost_top_edge - 2
+
         new_platform_top_edge = random.randint(int(topmost_top_edge), int(bottommost_top_edge))
 
         new_platform_length = random.randint(MINIMUM_PLATFORM_LENGTH, MAXIMUM_PLATFORM_LENGTH)
@@ -68,6 +72,7 @@ class Generator:
 
         max_distance = self.get_horizontal_distance(max_vertical_time, accuracy)
         min_distance = self.get_horizontal_distance(max_vertical_time, accuracy - MINIMUM_GENERATOR_ACCURACY_DECREASE)
+
         distance = random.randint(int(min_distance), int(max_distance))
 
         new_platform_left_edge = last_platform.right_edge + distance

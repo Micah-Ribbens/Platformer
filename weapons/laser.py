@@ -24,8 +24,6 @@ class Laser(Component, Weapon):
     def run(self):
         """Runs the laser"""
 
-        print("RUN")
-
         self.timed_event.run(False, False)
 
         if self.timed_event.has_finished():

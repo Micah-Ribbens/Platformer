@@ -25,10 +25,12 @@ from game_qu.gui_components.screen import Screen
 from game_qu.base.important_variables import *
 from base.platformer_constants import *
 from game_qu.base.utility_functions import *
+from powerups.heart_powerup import HeartPowerup
+from powerups.ammo_powerup import AmmoPowerup
+from powerups.powerup import Powerup
 
 # TODO FIGURE OUT WHY SOMETIMES THERE ARE NO ENEMIES ON PLATFORM
 from game_qu.gui_components.text_box import TextBox
-
 
 class PlatformerScreen(Screen):
     """A basic platformer game"""
@@ -36,6 +38,7 @@ class PlatformerScreen(Screen):
     player_health_bars = []
     enemies = []
     platforms = []
+    powerups = []
     game_objects = []
     gravity_engine = None
     frames = 0
@@ -133,6 +136,7 @@ class PlatformerScreen(Screen):
 
         self.update_score()
         self.gravity_engine.run()
+        self.powerups = list(filter(lambda item: item.right_edge >= 0, self.powerups))
 
         self.ammo_field.text = f"Ammo Left: {self.players[0].ammo_left}"
 
@@ -153,6 +157,21 @@ class PlatformerScreen(Screen):
 
             if enemy.hit_points_left <= 0:
                 self.player_score += SCORE_FROM_KILLING_ENEMY
+                self.players[0].increase_ammo(AMMO_GAINED_FROM_KILLING_ENEMY)
+
+    def run_powerup_spawning(self, new_platform):
+        """Runs the spawning of powerups after a platform is generated: a powerup won't spawn everytime"""
+
+        should_generate_powerup = is_random_chance(PROBABILITY_OF_GETTING_POWERUP_GENERATED)
+        # weapon_powerups = [BouncyProjectilePowerup, StraightProjectilePowerup]
+        powerups = [HeartPowerup]
+        powerup_left_edge, powerup_top_edge = new_platform.horizontal_midpoint, new_platform.top_edge - Powerup.height
+
+        if should_generate_powerup:
+            # should_generate_weapon = is_random_chance(PROBABILITY_OF_POWERUP_BEING_A_WEAPON)
+            # powerup_class_list = weapon_powerups if should_generate_weapon else non_weapon_powerups
+            powerup_class = random.choice(powerups)
+            self.powerups.append(powerup_class(powerup_left_edge, powerup_top_edge))
 
     def update_score(self):
         """Updates the HUD and the high score of the player"""
@@ -177,6 +196,7 @@ class PlatformerScreen(Screen):
             # self.gravity_engine.add_game_objects([new_enemy])
 
             self.number_of_platforms_generated += 1
+            self.run_powerup_spawning(new_platform)
 
     def get_random_enemy(self, platform):
         """returns: Enemy; a random enemy"""
@@ -211,6 +231,7 @@ class PlatformerScreen(Screen):
         self.side_scroll_objects(side_scrolling_distance, self.players)
         self.side_scroll_objects(side_scrolling_distance, self.enemies)
         self.side_scroll_objects(side_scrolling_distance, self.platforms)
+        self.side_scroll_objects(side_scrolling_distance, self.powerups)
         self.wall_of_death.update_for_side_scrolling(side_scrolling_distance)
 
     def get_code_ready_for_collisions(self):
@@ -233,7 +254,7 @@ class PlatformerScreen(Screen):
         self.enemies = updated_enemies
 
         self.remove_platforms_not_within_screen()
-        self.game_objects = player_components + enemy_components + self.platforms
+        self.game_objects = player_components + enemy_components + self.platforms + self.powerups
 
     def remove_platforms_not_within_screen(self):
         """Removes all the platforms that are not within the screen"""
@@ -300,6 +321,7 @@ class PlatformerScreen(Screen):
         self.frames = 0
         self.number_of_platforms_generated = 0
         self.wall_of_death.reset()
+        self.powerups = []
 
         high_score_message = f"New High Score: {self.high_score}"
         non_high_score_message = f"Score: {self.player_score}"
@@ -411,7 +433,7 @@ class PlatformerScreen(Screen):
             game_components += game_object.get_components()
 
         # game_components += self.player_health_bars + self.platforms + [self.hud, self.wall_of_death]
-        game_components += self.player_health_bars + self.platforms + [self.hud]
+        game_components += self.powerups + self.player_health_bars + self.platforms + [self.hud]
         return game_components if self.intermediate_screen.has_finished() else self.intermediate_screen.get_components()
 
     # HELPER METHODS FOR COLLISIONS; Since they all have a unique length I can just use the lengths here
