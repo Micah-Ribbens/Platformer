@@ -28,17 +28,17 @@ PLAYER_BASE_TOP_EDGE = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 60)
 ## TODO Generator
 
 ### Miscellaneous
-MAX_VERTICAL_CHANGE = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 50)
+MAX_VERTICAL_CHANGE = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 100)
 SIDE_SCROLLING_START_DISTANCE = VelocityCalculator.get_dimension(SCREEN_LENGTH, 33)
 # The minimum amount of the next platform that has to be visible when the player gets to the end of the previous platform
 MINIMUM_PLATFORM_LENGTH_VISIBLE = VelocityCalculator.get_dimension(SCREEN_LENGTH, 20)
 MINIMUM_GENERATOR_ACCURACY_DECREASE = .05
 MARGINS_OF_ERROR = Path(Point(0, 20), [Point(20, 15), Point(40, 10), Point(60, 8), Point(70, 7),
                                              Point(80, 4), Point(90, 3), Point(100, 0)])
-MAXIMUM_PLATFORM_VERTICAL_BUFFER = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 10)
+MAXIMUM_PLATFORM_VERTICAL_BUFFER = VelocityCalculator.get_dimension(SCREEN_HEIGHT, 5)
 
 ### Platform Dimensions
-MINIMUM_PLATFORM_HEIGHT = int(VelocityCalculator.get_dimension(SCREEN_HEIGHT, 10))
+MINIMUM_PLATFORM_HEIGHT = int(VelocityCalculator.get_dimension(SCREEN_HEIGHT, 15))
 MAXIMUM_PLATFORM_HEIGHT = int(VelocityCalculator.get_dimension(SCREEN_HEIGHT, 20))
 MINIMUM_PLATFORM_LENGTH = int(VelocityCalculator.get_dimension(SCREEN_LENGTH, 45))
 MAXIMUM_PLATFORM_LENGTH = int(VelocityCalculator.get_dimension(SCREEN_LENGTH, 55))
